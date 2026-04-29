@@ -28,3 +28,18 @@ yarn-debug.log*
 ## --- Operating System ---
 .DS_Store
 Thumbs.db
+
+## --- IDE & Editor Settings ---
+.vscode/
+.idea/
+
+## --- Environment & Secrets ---
+.env
+.env.*
+appsettings.Development.json 
+
+## --- Testing & Coverage ---
+coverage/
+
+## --- Backend Logs ---
+*.log
