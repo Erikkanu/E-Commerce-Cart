@@ -1,0 +1,26 @@
+# ── Build stage ──────────────────────────────────────────────────────────────
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /src
+
+# Copy csproj and restore dependencies first (better layer caching)
+COPY ServerApi/ServerApi.csproj ServerApi/
+RUN dotnet restore ServerApi/ServerApi.csproj
+
+# Copy the rest of the source and publish
+COPY ServerApi/ ServerApi/
+WORKDIR /src/ServerApi
+RUN dotnet publish ServerApi.csproj -c Release -o /app/publish
+
+# ── Runtime stage ─────────────────────────────────────────────────────────────
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+WORKDIR /app
+
+COPY --from=build /app/publish .
+
+# The API listens on HTTP only inside Docker (no HTTPS needed between containers)
+ENV ASPNETCORE_URLS=http://+:5124
+ENV ASPNETCORE_ENVIRONMENT=Production
+
+EXPOSE 5124
+
+ENTRYPOINT ["dotnet", "ServerApi.dll"]

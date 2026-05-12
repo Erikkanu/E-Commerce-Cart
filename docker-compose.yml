@@ -1,0 +1,70 @@
+services:
+
+  # ── 1. SQL Server ─────────────────────────────────────────────────────────
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "eCommerce!C4rt"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - |
+          /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "eCommerce!C4rt" -Q "SELECT 1" -C -l 5 ||
+          /opt/mssql-tools/bin/sqlcmd  -S localhost -U sa -P "eCommerce!C4rt" -Q "SELECT 1" -l 5
+      interval: 10s
+      timeout: 10s
+      retries: 15
+      start_period: 45s
+
+  # ── 2. DB initialiser (runs init.sql then exits) ──────────────────────────
+  sqlserver-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver-init
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    volumes:
+      - ./docker/sql/init.sql:/init.sql
+    command: >
+      /bin/bash -c "
+        /opt/mssql-tools18/bin/sqlcmd -S sqlserver -U sa -P 'eCommerce!C4rt' -i /init.sql -C ||
+        /opt/mssql-tools/bin/sqlcmd  -S sqlserver -U sa -P 'eCommerce!C4rt' -i /init.sql &&
+        echo 'Database initialised successfully'
+      "
+    restart: "no"
+
+  # ── 3. .NET 9 Backend API ─────────────────────────────────────────────────
+  serverapi:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: serverapi
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=ECommerceDB;User Id=sa;Password=eCommerce!C4rt;TrustServerCertificate=True;MultipleActiveResultSets=true"
+      ASPNETCORE_ENVIRONMENT: Development # Changed to Development to avoid CORS/Swagger issues
+      ASPNETCORE_URLS: "http://+:5124"    # Forces .NET to listen on 5124 inside the container
+    ports:
+      - "5124:5124"
+    depends_on:
+      sqlserver-init:
+        condition: service_completed_successfully
+
+  # ── 4. Angular Frontend ───────────────────────────────────────────────────
+  client:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.client
+    container_name: client
+    ports:
+      - "4200:80"
+    depends_on:
+      - serverapi
+
+volumes:
+  sqlserver_data:
