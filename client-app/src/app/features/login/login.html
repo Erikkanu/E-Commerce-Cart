@@ -1,1 +1,44 @@
-<p>login works!</p>
+<div class="login-container">
+  <div class="login-card">
+    <h2>Login</h2>
+    @if (authError()) {
+      <div class="error-message">{{ authError() }}</div>
+    }
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="Enter your email"
+        />
+        @if (form.get('email')?.invalid && form.get('email')?.touched) {
+          <span class="error">Please enter a valid email</span>
+        }
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Enter your password"
+        />
+        @if (form.get('password')?.invalid && form.get('password')?.touched) {
+          <span class="error">Password must be at least 6 characters</span>
+        }
+      </div>
+      <button type="submit" [disabled]="form.invalid || authLoading()" class="submit-btn">
+        @if (authLoading()) {
+          Logging in...
+        } @else {
+          Login
+        }
+      </button>
+    </form>
+    <p class="redirect-text">
+      Don't have an account? <a routerLink="/register">Register here</a>
+    </p>
+  </div>
+</div>

@@ -4,12 +4,11 @@
 - **Frontend:** Angular 21 (Single Page Application)
 - **Backend:** .NET 9 Web API (Minimal APIs, C# 13)
 - **Database:** MS SQL Server via Pure ADO.NET (`Microsoft.Data.SqlClient`)
-- **Infrastructure:** Frontend on `http://localhost:4200`, Backend on `https://localhost:7001`
+- **Infrastructure:** Frontend on `http://localhost:4200`, Backend on `https://localhost:7001`, uses containers in docker and docker compose to start up all three at the same time
 
 ## Full-Stack Integration & Business Rules
 - **Contract Matching:** Map .NET PascalCase properties to Angular camelCase properties.
 - **Trust No Client (Checkout):** The `CheckoutComponent` will only send an array of `ProductId` and `Quantity`. The backend MUST independently query the database for the current prices and calculate the total order price. Do NOT trust frontend pricing data.
-- **Data Fetching:** Use `httpResource()` in Angular for Signal-integrated API calls.
 - **Error Handling:** Backend returns `ProblemDetails` (RFC 7807); Frontend maps these to accessible Signal-based error states.
 
 ## .NET 9 Backend Standards (STRICT NO-ORM)
@@ -18,7 +17,6 @@
 - **Architecture:** Use the Repository Pattern to encapsulate all raw SQL logic.
 - **Security:** Always use parameterized queries (e.g., `@ProductId`) to prevent SQL injection.
 - **Endpoints:** Use Minimal APIs (`app.MapGet`, `app.MapPost`). Keep endpoints clean by delegating database logic to repositories.
-
 
 ## TypeScript Best Practices
 - Use strict type checking

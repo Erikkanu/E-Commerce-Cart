@@ -1,1 +1,76 @@
-<p>register-user works!</p>
+<div class="register-container">
+  <div class="register-card">
+    <h2>Create Account</h2>
+    @if (authError()) {
+      <div class="error-message">{{ authError() }}</div>
+    }
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          placeholder="Choose a username"
+        />
+        @if (form.get('username')?.invalid && form.get('username')?.touched) {
+          <span class="error">Username must be at least 3 characters</span>
+        }
+      </div>
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="Enter your email"
+        />
+        @if (form.get('email')?.invalid && form.get('email')?.touched) {
+          <span class="error">Please enter a valid email</span>
+        }
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Enter your password"
+        />
+        @if (form.get('password')?.invalid && form.get('password')?.touched) {
+          <span class="error">Password must be at least 6 characters</span>
+        }
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name:</label>
+          <input
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+            placeholder="First name (optional)"
+          />
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name:</label>
+          <input
+            id="lastName"
+            type="text"
+            formControlName="lastName"
+            placeholder="Last name (optional)"
+          />
+        </div>
+      </div>
+      <button type="submit" [disabled]="form.invalid || authLoading()" class="submit-btn">
+        @if (authLoading()) {
+          Creating account...
+        } @else {
+          Register
+        }
+      </button>
+    </form>
+    <p class="redirect-text">
+      Already have an account? <a routerLink="/login">Login here</a>
+    </p>
+  </div>
+</div>

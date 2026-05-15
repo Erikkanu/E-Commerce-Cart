@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerApi", "ServerApi\Serv
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "client-app", "client-app\", "{ECDBF69A-6756-7FBC-6F74-CB65B32A9EFF}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_64228"
 		Debug.AspNetCompiler.PhysicalPath = "client-app\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_64228\"

@@ -1,15 +1,28 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Product } from '../models/product.model'; // Ensure this path is correct
+import { Product } from '../models/product.model';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
   private http = inject(HttpClient);
-  // Using the port from your backend terminal
-  private readonly baseUrl = 'https://localhost:7252/api';
+  private readonly baseUrl = '/api';
 
-  // toSignal perfectly bridges the gap between old Observables and new Signals
-  // We provide an empty array [] as the initial value while it loads
-  products = toSignal(this.http.get<Product[]>(`${this.baseUrl}/products`), { initialValue: [] });
+  products = toSignal(this.http.get<Product[]>(`${this.baseUrl}/product`), { initialValue: [] });
+
+  async get<T>(endpoint: string): Promise<T> {
+    return this.http.get<T>(`${this.baseUrl}${endpoint}`).toPromise() as Promise<T>;
+  }
+
+  async post<T>(endpoint: string, data: unknown): Promise<T> {
+    return this.http.post<T>(`${this.baseUrl}${endpoint}`, data).toPromise() as Promise<T>;
+  }
+
+  async put<T>(endpoint: string, data: unknown): Promise<T> {
+    return this.http.put<T>(`${this.baseUrl}${endpoint}`, data).toPromise() as Promise<T>;
+  }
+
+  async delete<T>(endpoint: string): Promise<T> {
+    return this.http.delete<T>(`${this.baseUrl}${endpoint}`).toPromise() as Promise<T>;
+  }
 }

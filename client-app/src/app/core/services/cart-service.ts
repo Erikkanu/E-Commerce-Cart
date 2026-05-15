@@ -12,13 +12,27 @@ export class CartService {
   // This updates instantly whenever cartItems changes
   count = computed(() => this.cartItems().length);
 
-  // Total price calculation (for the UI only - backend will re-calculate during checkout)
+  // Total price calculation (backend will re-calculate during checkout)
   totalPrice = computed(() =>
     this.cartItems().reduce((acc, curr) => acc + curr.price, 0)
   );
 
   addToCart(product: Product) {
     this.cartItems.update(prev => [...prev, product]);
+  }
+
+  removeOne(productId: number) {
+    this.cartItems.update(prev => {
+      const index = prev.findIndex(item => item.id === productId);
+      if (index > -1) {
+        return [...prev.slice(0, index), ...prev.slice(index + 1)];
+      }
+      return prev;
+    });
+  }
+
+  removeAll(productId: number) {
+    this.cartItems.update(prev => prev.filter(item => item.id !== productId));
   }
 
   clearCart() {

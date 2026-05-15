@@ -1,14 +1,21 @@
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { ProductListComponent } from './features/product-list/product-list';
+import { HeaderComponent } from './core/layout/header';
 
 @Component({
   selector: 'app-root',
-  imports: [ProductListComponent],
+  imports: [HeaderComponent, RouterOutlet, ProductListComponent],
   template: `
-    <main style="padding: 2rem;">
-      <h1>Welcome to the No-ORM Store</h1>
-      <app-product-list></app-product-list>
-    </main>
+    <app-header></app-header>
+    <router-outlet></router-outlet>
+  `,
+  styles: `
+    :host {
+      display: block;
+      min-height: 100vh;
+    }
   `
 })
 export class App { }
+

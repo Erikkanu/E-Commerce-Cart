@@ -1,8 +1,10 @@
 using ServerApi.Repositories;
+using ServerApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. Setup CORS so Angular can talk to this API
+builder.Services.AddControllers();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular", policy =>
@@ -13,23 +15,18 @@ builder.Services.AddCors(options =>
     });
 });
 
-// 2. Database Connection String (We inject this into the repository)
-// NOTE: Make sure your MS SQL database is actually named "ECommerceDB"
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? "Server=(localdb)\\mssqllocaldb;Database=ECommerceDB;Trusted_Connection=True;TrustServerCertificate=True;";
 
 builder.Services.AddSingleton(connectionString);
 builder.Services.AddScoped<ProductRepository>();
+builder.Services.AddScoped<UserRepository>();
 
 var app = builder.Build();
 
+app.UseRouting();
 app.UseCors("AllowAngular");
-
-// 3. The Minimal API Endpoint
-app.MapGet("/api/products", async (ProductRepository repo) =>
-{
-    var products = await repo.GetAllProductsAsync();
-    return Results.Ok(products);
-});
+app.MapControllers();
 
 app.Run();
+

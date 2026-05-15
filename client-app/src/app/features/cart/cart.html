@@ -1,1 +1,11 @@
-<p>cart works!</p>
+@for (item of groupedItems(); track item.product.id) {
+<div class="cart-item">
+  <p>{{ item.product.name }}</p>
+  <p>Quantity: {{ item.quantity }}</p>
+  <button (click)="removeOne(item.product)">Remove One</button>
+</div>
+} @empty {
+<div class="empty-cart-message">
+  <p>Your cart is currently empty.</p>
+</div>
+}

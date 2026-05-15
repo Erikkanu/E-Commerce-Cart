@@ -47,13 +47,19 @@ services:
     container_name: serverapi
     environment:
       ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=ECommerceDB;User Id=sa;Password=eCommerce!C4rt;TrustServerCertificate=True;MultipleActiveResultSets=true"
-      ASPNETCORE_ENVIRONMENT: Development # Changed to Development to avoid CORS/Swagger issues
-      ASPNETCORE_URLS: "http://+:5124"    # Forces .NET to listen on 5124 inside the container
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: "http://+:5124"
     ports:
       - "5124:5124"
     depends_on:
       sqlserver-init:
         condition: service_completed_successfully
+    volumes:
+      - ./ServerApi/src:/app/src
+    develop:
+      watch:
+        - path: ./ServerApi/src
+          action: rebuild
 
   # ── 4. Angular Frontend ───────────────────────────────────────────────────
   client:
@@ -65,6 +71,12 @@ services:
       - "4200:80"
     depends_on:
       - serverapi
+    volumes:
+      - ./client-app/src:/app/src
+    develop:
+      watch:
+        - path: ./client-app/src
+          action: rebuild
 
 volumes:
   sqlserver_data:
