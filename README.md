@@ -31,8 +31,7 @@ You only need Docker installed on your machine:
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
-cd <repository-folder>
+git clone <https://github.com/Erikkanu/E-Commerce-Cart>
 ```
 
 ### 2. Start the application
@@ -45,12 +44,12 @@ docker compose up --build
 
 This single command will:
 
-1. Pull all required Docker images (first run only — may take a few minutes)
+1. Pull all required Docker images (first run may take a few minutes)
 2. Build the .NET 9 backend and Angular frontend
 3. Start SQL Server and initialize the database schema and seed data
 4. Start the backend API and frontend, waiting for each dependency to be healthy
 
-> **First run note:** Docker needs to download the base images (SQL Server, .NET SDK, Node, nginx). This can take 3–5 minutes depending on your internet connection. Subsequent runs are much faster.
+> **First run note:** Docker needs to download the base images (SQL Server, .NET SDK, Node, nginx). This can take several minutes.
 
 ### 3. Open the app
 
@@ -59,14 +58,6 @@ Once you see the containers running and no errors in the terminal, open your bro
 ```
 http://localhost:4200
 ```
-
-The backend API is available at:
-
-```
-http://localhost:5124
-```
-
----
 
 ## Stopping the Application
 
